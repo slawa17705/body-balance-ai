@@ -1,0 +1,4 @@
+node_modules/
+.env
+ai-cache.json
+package-lock.json

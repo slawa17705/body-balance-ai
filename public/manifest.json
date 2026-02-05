@@ -1,0 +1,17 @@
+{
+    "name": "AI Тренер & Диетолог",
+    "short_name": "AI Fitness",
+    "description": "Персональный AI тренер, диетолог и специалист по энергии",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#667eea",
+    "theme_color": "#667eea",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
