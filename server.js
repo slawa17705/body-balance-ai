@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const axios = require('axios');
 require('dotenv').config();
 
@@ -37,8 +36,7 @@ app.get('/health', (req, res) => {
 let bot = null;
 console.log('🤖 Telegram бот отключен в server.js');
 
-// Google Sheets интеграция (используем существующий код)
-const { google } = require('googleapis');
+
 
 class GoogleSheetsManager {
     // ... существующий код GoogleSheetsManager ...
@@ -757,4 +755,12 @@ async function getAIResponse(prompt, specialist) {
         console.error('AI ошибка:', error);
         return `Рекомендации от ${specialist} временно недоступны. Обратитесь позже.`;
     }
+}
+
+module.exports = app;
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Локальный сервер на порту ${PORT}`);
+    });
 }
