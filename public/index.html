@@ -155,6 +155,56 @@
             white-space: pre-line;
         }
 
+        /* Красивые tooltip для радио-кнопок */
+        .radio-label {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-label:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            white-space: pre-line;
+            max-width: 280px;
+            min-width: 250px;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            pointer-events: none;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .radio-label:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: #667eea;
+            margin-bottom: -6px;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        /* На мобильных скрываем tooltip */
+        @media (max-width: 480px) {
+
+            .radio-label:hover::after,
+            .radio-label:hover::before {
+                display: none;
+            }
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -416,275 +466,279 @@
             <div class="form-group">
                 <label>Уровень активности:</label>
                 <div class="radio-group">
-                    <label class="radio-label">
+                    <label class="radio-label"
+                        title="🛋️ НИЗКАЯ: офисная работа, нет тренировок, меньше 5000 шагов в день, сидячий образ жизни">
                         <input type="radio" name="test-activity" value="low" checked>
                         <span>Низкая</span>
                     </label>
-                    <label class="radio-label">
+
+                    <label class="radio-label"
+                        title="🚶 СРЕДНЯЯ: 2-3 тренировки в неделю, 5000-10000 шагов, работа на ногах, активный отдых">
                         <input type="radio" name="test-activity" value="medium">
                         <span>Средняя</span>
                     </label>
-                    <label class="radio-label">
+
+                    <label class="radio-label"
+                        title="🏋️ ВЫСОКАЯ: 4+ тренировок в неделю, физическая работа, спортсмен, больше 10000 шагов">
                         <input type="radio" name="test-activity" value="high">
                         <span>Высокая</span>
                     </label>
                 </div>
+
+                <div class="form-group">
+                    <label for="test-goal">Цель:</label>
+                    <select id="test-goal">
+                        <option value="weight-loss">Похудение</option>
+                        <option value="muscle-gain">Набор массы</option>
+                        <option value="endurance">Выносливость</option>
+                        <option value="health">Оздоровление</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="test-info">Дополнительная информация:</label>
+                    <textarea id="test-info" rows="3" placeholder="Особые пожелания, травмы, ограничения..."></textarea>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="test-goal">Цель:</label>
-                <select id="test-goal">
-                    <option value="weight-loss">Похудение</option>
-                    <option value="muscle-gain">Набор массы</option>
-                    <option value="endurance">Выносливость</option>
-                    <option value="health">Оздоровление</option>
-                </select>
+            <div class="ai-buttons">
+                <button class="ai-button" id="trainer-btn">
+                    <i class="fas fa-dumbbell"></i>
+                    🎯 Профессиональный тренер
+                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Элитный уровень</div>
+                </button>
+
+                <button class="ai-button" id="diet-btn">
+                    <i class="fas fa-apple-alt"></i>
+                    🥗 Врач-нутрициолог
+                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Санаторный уровень</div>
+                </button>
+
+                <button class="ai-button" id="energy-btn">
+                    <i class="fas fa-bolt"></i>
+                    ⚡ Специалист по энергии
+                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Циркадные ритмы</div>
+                </button>
             </div>
 
-            <div class="form-group">
-                <label for="test-info">Дополнительная информация:</label>
-                <textarea id="test-info" rows="3" placeholder="Особые пожелания, травмы, ограничения..."></textarea>
-            </div>
-        </div>
-
-        <div class="ai-buttons">
-            <button class="ai-button" id="trainer-btn">
-                <i class="fas fa-dumbbell"></i>
-                🎯 Профессиональный тренер
-                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Элитный уровень</div>
-            </button>
-
-            <button class="ai-button" id="diet-btn">
-                <i class="fas fa-apple-alt"></i>
-                🥗 Врач-нутрициолог
-                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Санаторный уровень</div>
-            </button>
-
-            <button class="ai-button" id="energy-btn">
-                <i class="fas fa-bolt"></i>
-                ⚡ Специалист по энергии
-                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Циркадные ритмы</div>
-            </button>
-        </div>
-
-        <div style="margin-top: 20px; text-align: center;">
-            <button id="clear-cache-btn" style="
+            <div style="margin-top: 20px; text-align: center;">
+                <button id="clear-cache-btn" style="
                 background: #ff6b6b; color: white; padding: 10px 20px;
                 border-radius: 8px; border: none; cursor: pointer;
                 font-size: 14px; display: inline-flex; align-items: center; gap: 8px;
             ">
-                <i class="fas fa-trash-alt"></i>
-                Очистить кэш рекомендаций
-            </button>
+                    <i class="fas fa-trash-alt"></i>
+                    Очистить кэш рекомендаций
+                </button>
+            </div>
         </div>
-    </div>
 
-    <div class="result" id="result">
-        <div class="result-title" id="result-title"></div>
-        <div class="result-content" id="result-content"></div>
-    </div>
+        <div class="result" id="result">
+            <div class="result-title" id="result-title"></div>
+            <div class="result-content" id="result-content"></div>
+        </div>
 
-    <script>
-        const API_URL = window.location.origin;
+        <script>
+            const API_URL = window.location.origin;
 
-        console.log('🌐 API URL:', API_URL);
-        console.log('🚀 Тест AI кнопок загружен');
+            console.log('🌐 API URL:', API_URL);
+            console.log('🚀 Тест AI кнопок загружен');
 
-        function getTestFormData() {
-            return {
-                name: document.getElementById('test-name').value.trim(),
-                age: parseInt(document.getElementById('test-age').value) || 0,
-                gender: document.querySelector('input[name="test-gender"]:checked').value,
-                weight: parseFloat(document.getElementById('test-weight').value) || 0,
-                height: parseInt(document.getElementById('test-height').value) || 0,
-                activity: document.querySelector('input[name="test-activity"]:checked').value,
-                goal: document.getElementById('test-goal').value,
-                additionalInfo: document.getElementById('test-info').value.trim()
-            };
-        }
-
-        function validateForm(data) {
-            if (!data.name || data.name.length < 2) {
-                return '❌ Введите имя (минимум 2 символа)';
-            }
-            if (!data.age || data.age < 10 || data.age > 100) {
-                return '❌ Введите корректный возраст (10-100 лет)';
-            }
-            if (!data.weight || data.weight < 30 || data.weight > 200) {
-                return '❌ Введите корректный вес (30-200 кг)';
-            }
-            return null;
-        }
-
-        function showResult(title, content) {
-            alert(`Показываю: ${title}\nДлина текста: ${content?.length}`);
-            console.log('🚨 showResult вызван!', title, content?.length);
-
-            const resultDiv = document.getElementById('result');
-            const titleDiv = document.getElementById('result-title');
-            const contentDiv = document.getElementById('result-content');
-
-            console.log('🔍 Элементы:', {
-                resultDiv: !!resultDiv,
-                titleDiv: !!titleDiv,
-                contentDiv: !!contentDiv
-            });
-
-            if (!resultDiv || !titleDiv || !contentDiv) {
-                console.error('❌ Не найдены элементы для показа результата!');
-                alert('Ошибка: не найдены элементы на странице');
-                return;
+            function getTestFormData() {
+                return {
+                    name: document.getElementById('test-name').value.trim(),
+                    age: parseInt(document.getElementById('test-age').value) || 0,
+                    gender: document.querySelector('input[name="test-gender"]:checked').value,
+                    weight: parseFloat(document.getElementById('test-weight').value) || 0,
+                    height: parseInt(document.getElementById('test-height').value) || 0,
+                    activity: document.querySelector('input[name="test-activity"]:checked').value,
+                    goal: document.getElementById('test-goal').value,
+                    additionalInfo: document.getElementById('test-info').value.trim()
+                };
             }
 
-            titleDiv.textContent = title;
-            contentDiv.textContent = content;
-            resultDiv.classList.add('active');
+            function validateForm(data) {
+                if (!data.name || data.name.length < 2) {
+                    return '❌ Введите имя (минимум 2 символа)';
+                }
+                if (!data.age || data.age < 10 || data.age > 100) {
+                    return '❌ Введите корректный возраст (10-100 лет)';
+                }
+                if (!data.weight || data.weight < 30 || data.weight > 200) {
+                    return '❌ Введите корректный вес (30-200 кг)';
+                }
+                return null;
+            }
 
-            console.log('✅ Результат установлен, класс добавлен');
-            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+            function showResult(title, content) {
+                alert(`Показываю: ${title}\nДлина текста: ${content?.length}`);
+                console.log('🚨 showResult вызван!', title, content?.length);
 
-        async function sendAIRequest(endpoint, specialist, userData) {
-            try {
-                console.log(`📤 Отправка запроса на ${endpoint}:`, userData);
+                const resultDiv = document.getElementById('result');
+                const titleDiv = document.getElementById('result-title');
+                const contentDiv = document.getElementById('result-content');
 
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        userData: userData,
-                        timestamp: new Date().toISOString()
-                    })
+                console.log('🔍 Элементы:', {
+                    resultDiv: !!resultDiv,
+                    titleDiv: !!titleDiv,
+                    contentDiv: !!contentDiv
                 });
 
-                console.log('📥 Ответ сервера:', response.status);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                if (!resultDiv || !titleDiv || !contentDiv) {
+                    console.error('❌ Не найдены элементы для показа результата!');
+                    alert('Ошибка: не найдены элементы на странице');
+                    return;
                 }
 
-                const data = await response.json();
-                console.log('✅ Данные получены:', data);
+                titleDiv.textContent = title;
+                contentDiv.textContent = content;
+                resultDiv.classList.add('active');
 
-                if (data.weightChange) {
-                    setTimeout(() => {
-                        showWeightChangeNotification(data.weightChange);
-                    }, 1000);
-                }
-
-                return data;
-
-            } catch (error) {
-                console.error('🔥 Ошибка:', error);
-                throw error;
-            }
-        }
-
-        document.getElementById('trainer-btn').addEventListener('click', async function () {
-            const userData = getTestFormData();
-            const error = validateForm(userData);
-
-            if (error) {
-                alert(error);
-                return;
+                console.log('✅ Результат установлен, класс добавлен');
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
-            showResult('🎯 Профессиональный тренер анализирует...', 'Запрос отправлен...');
-
-            try {
-                const result = await sendAIRequest('/api/trainer', 'Тренер', userData);
-                showAIResultModal(`🎯 Рекомендации тренера`, result.advice, userData.name);
-            } catch (error) {
-                showResult('❌ Ошибка при запросе к тренеру', error.message);
-            }
-        });
-
-        document.getElementById('diet-btn').addEventListener('click', async function () {
-            const userData = getTestFormData();
-            const error = validateForm(userData);
-
-            if (error) {
-                alert(error);
-                return;
-            }
-
-            showResult('🥗 Врач-нутрициолог анализирует...', 'Запрос отправлен...');
-
-            try {
-                const result = await sendAIRequest('/api/diet', 'Диетолог', userData);
-                showAIResultModal(`🥗 Рекомендации диетолога`, result.advice, userData.name);
-            } catch (error) {
-                showResult('❌ Ошибка при запросе к диетологу', error.message);
-            }
-        });
-
-        document.getElementById('energy-btn').addEventListener('click', async function () {
-            const userData = getTestFormData();
-            const error = validateForm(userData);
-
-            if (error) {
-                alert(error);
-                return;
-            }
-
-            showResult('⚡ Специалист по энергии анализирует...', 'Запрос отправлен...');
-
-            try {
-                const result = await sendAIRequest('/api/energy', 'Энергия', userData);
-                showAIResultModal(`⚡ Рекомендации по энергии`, result.advice, userData.name);
-            } catch (error) {
-                showResult('❌ Ошибка при запросе к специалисту', error.message);
-            }
-        });
-
-        document.getElementById('clear-cache-btn').addEventListener('click', async function () {
-            if (confirm('Очистить кэш рекомендаций? Это не удалит ваши данные, только сбросит кэшированные ответы AI.')) {
+            async function sendAIRequest(endpoint, specialist, userData) {
                 try {
-                    const response = await fetch('/api/clean-cache', {
+                    console.log(`📤 Отправка запроса на ${endpoint}:`, userData);
+
+                    const response = await fetch(endpoint, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userData: userData,
+                            timestamp: new Date().toISOString()
+                        })
                     });
-                    const result = await response.json();
-                    alert(result.message || 'Кэш очищен!');
+
+                    console.log('📥 Ответ сервера:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Данные получены:', data);
+
+                    if (data.weightChange) {
+                        setTimeout(() => {
+                            showWeightChangeNotification(data.weightChange);
+                        }, 1000);
+                    }
+
+                    return data;
+
                 } catch (error) {
-                    alert('Ошибка очистки кэша');
+                    console.error('🔥 Ошибка:', error);
+                    throw error;
                 }
             }
-        });
 
-        window.fillTestData = function () {
-            document.getElementById('test-name').placeholder = 'Введите имя, например: Александр';
-            document.getElementById('test-age').placeholder = 'Введите возраст, например: 35';
-            document.getElementById('test-weight').placeholder = 'Введите вес в кг, например: 85';
-            document.getElementById('test-height').placeholder = 'Введите рост в см, например: 180';
-            document.getElementById('test-info').placeholder = 'Опишите вашу цель, например: Хочу улучшить выносливость и сбросить 10 кг';
+            document.getElementById('trainer-btn').addEventListener('click', async function () {
+                const userData = getTestFormData();
+                const error = validateForm(userData);
 
-            console.log('✅ Примеры установлены');
-        };
+                if (error) {
+                    alert(error);
+                    return;
+                }
 
-        console.log('💡 Для быстрого теста введите в консоли: fillTestData()');
+                showResult('🎯 Профессиональный тренер анализирует...', 'Запрос отправлен...');
 
-        setTimeout(() => {
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                fillTestData();
-                console.log('✅ Автозаполнено тестовыми данными');
-            }
-        }, 1000);
+                try {
+                    const result = await sendAIRequest('/api/trainer', 'Тренер', userData);
+                    showAIResultModal(`🎯 Рекомендации тренера`, result.advice, userData.name);
+                } catch (error) {
+                    showResult('❌ Ошибка при запросе к тренеру', error.message);
+                }
+            });
 
-        function showWeightChangeNotification(weightData) {
-            if (!weightData) return;
+            document.getElementById('diet-btn').addEventListener('click', async function () {
+                const userData = getTestFormData();
+                const error = validateForm(userData);
 
-            const notificationHTML = `
+                if (error) {
+                    alert(error);
+                    return;
+                }
+
+                showResult('🥗 Врач-нутрициолог анализирует...', 'Запрос отправлен...');
+
+                try {
+                    const result = await sendAIRequest('/api/diet', 'Диетолог', userData);
+                    showAIResultModal(`🥗 Рекомендации диетолога`, result.advice, userData.name);
+                } catch (error) {
+                    showResult('❌ Ошибка при запросе к диетологу', error.message);
+                }
+            });
+
+            document.getElementById('energy-btn').addEventListener('click', async function () {
+                const userData = getTestFormData();
+                const error = validateForm(userData);
+
+                if (error) {
+                    alert(error);
+                    return;
+                }
+
+                showResult('⚡ Специалист по энергии анализирует...', 'Запрос отправлен...');
+
+                try {
+                    const result = await sendAIRequest('/api/energy', 'Энергия', userData);
+                    showAIResultModal(`⚡ Рекомендации по энергии`, result.advice, userData.name);
+                } catch (error) {
+                    showResult('❌ Ошибка при запросе к специалисту', error.message);
+                }
+            });
+
+            document.getElementById('clear-cache-btn').addEventListener('click', async function () {
+                if (confirm('Очистить кэш рекомендаций? Это не удалит ваши данные, только сбросит кэшированные ответы AI.')) {
+                    try {
+                        const response = await fetch('/api/clean-cache', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const result = await response.json();
+                        alert(result.message || 'Кэш очищен!');
+                    } catch (error) {
+                        alert('Ошибка очистки кэша');
+                    }
+                }
+            });
+
+            window.fillTestData = function () {
+                document.getElementById('test-name').placeholder = 'Введите имя, например: Александр';
+                document.getElementById('test-age').placeholder = 'Введите возраст, например: 35';
+                document.getElementById('test-weight').placeholder = 'Введите вес в кг, например: 85';
+                document.getElementById('test-height').placeholder = 'Введите рост в см, например: 180';
+                document.getElementById('test-info').placeholder = 'Опишите вашу цель, например: Хочу улучшить выносливость и сбросить 10 кг';
+
+                console.log('✅ Примеры установлены');
+            };
+
+            console.log('💡 Для быстрого теста введите в консоли: fillTestData()');
+
+            setTimeout(() => {
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    fillTestData();
+                    console.log('✅ Автозаполнено тестовыми данными');
+                }
+            }, 1000);
+
+            function showWeightChangeNotification(weightData) {
+                if (!weightData) return;
+
+                const notificationHTML = `
             <div id="weight-notification" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
                 background: ${weightData.type === 'success' ?
-                    'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
-                    'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
+                        'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
+                        'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
                 color: white;
                 padding: 20px;
                 border-radius: 12px;
@@ -744,44 +798,44 @@
                 </div>
             </div>`;
 
-            const oldNotification = document.getElementById('weight-notification');
-            if (oldNotification) oldNotification.remove();
+                const oldNotification = document.getElementById('weight-notification');
+                if (oldNotification) oldNotification.remove();
 
-            document.body.insertAdjacentHTML('beforeend', notificationHTML);
+                document.body.insertAdjacentHTML('beforeend', notificationHTML);
 
-            setTimeout(() => {
-                const notification = document.getElementById('weight-notification');
-                if (notification) {
-                    notification.style.animation = 'slideOutRight 0.5s ease';
-                    setTimeout(() => notification.remove(), 500);
-                }
-            }, 10000);
-        }
-
-        async function showWeightHistory() {
-            try {
-                const userData = getTestFormData();
-                const response = await fetch('/api/weight-history', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userData })
-                });
-
-                const data = await response.json();
-
-                if (data.success && data.history && data.history.length > 0) {
-                    showWeightHistoryModal(data);
-                } else {
-                    alert('📊 История веса пока недоступна или пуста');
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки истории:', error);
-                alert('Не удалось загрузить историю веса');
+                setTimeout(() => {
+                    const notification = document.getElementById('weight-notification');
+                    if (notification) {
+                        notification.style.animation = 'slideOutRight 0.5s ease';
+                        setTimeout(() => notification.remove(), 500);
+                    }
+                }, 10000);
             }
-        }
 
-        function showWeightHistoryModal(historyData) {
-            const modalHTML = `
+            async function showWeightHistory() {
+                try {
+                    const userData = getTestFormData();
+                    const response = await fetch('/api/weight-history', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userData })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.history && data.history.length > 0) {
+                        showWeightHistoryModal(data);
+                    } else {
+                        alert('📊 История веса пока недоступна или пуста');
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки истории:', error);
+                    alert('Не удалось загрузить историю веса');
+                }
+            }
+
+            function showWeightHistoryModal(historyData) {
+                const modalHTML = `
             <div id="weight-history-modal" style="
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
                 background: rgba(0,0,0,0.8); z-index: 10002;
@@ -806,8 +860,8 @@
                     ${historyData.summary && historyData.summary.totalChange !== 0 ? `
                     <div style="
                         background: ${historyData.summary.totalChange < 0 ?
-                        'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
-                        'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
+                            'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
+                            'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
                         color: white; padding: 15px; border-radius: 10px;
                         margin-bottom: 20px; text-align: center;
                     ">
@@ -835,14 +889,14 @@
                         </div>
                         
                         ${historyData.history.map((record, index) => {
-                            const date = new Date(record.date).toLocaleDateString();
-                            const prevWeight = index < historyData.history.length - 1 ?
-                                historyData.history[index + 1].weight : null;
-                            const diff = prevWeight ? (record.weight - prevWeight).toFixed(1) : '—';
-                            const diffColor = diff === '—' ? '#666' :
-                                parseFloat(diff) < 0 ? '#4CAF50' : '#F44336';
+                                const date = new Date(record.date).toLocaleDateString();
+                                const prevWeight = index < historyData.history.length - 1 ?
+                                    historyData.history[index + 1].weight : null;
+                                const diff = prevWeight ? (record.weight - prevWeight).toFixed(1) : '—';
+                                const diffColor = diff === '—' ? '#666' :
+                                    parseFloat(diff) < 0 ? '#4CAF50' : '#F44336';
 
-                            return `
+                                return `
                             <div style="
                                 display: grid; grid-template-columns: 1fr 1fr 1fr;
                                 gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee;
@@ -855,7 +909,7 @@
                                 </div>
                             </div>
                             `;
-                        }).join('')}
+                            }).join('')}
                     </div>
                     ` : '<div style="text-align: center; padding: 20px; color: #666;">История веса пока пуста</div>'}
                     
@@ -871,15 +925,15 @@
                 </div>
             </div>`;
 
-            const oldModal = document.getElementById('weight-history-modal');
-            if (oldModal) oldModal.remove();
+                const oldModal = document.getElementById('weight-history-modal');
+                if (oldModal) oldModal.remove();
 
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-        }
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            }
 
-        function saveAIAdvice(title, content) {
-            try {
-                const text = `╔══════════════════════════════════════╗
+            function saveAIAdvice(title, content) {
+                try {
+                    const text = `╔══════════════════════════════════════╗
 ║           ${title.toUpperCase()}           ║
 ╚══════════════════════════════════════╝
 
@@ -891,35 +945,35 @@ ${content}
 ⚡ Система: Баланс тела AI
 ──────────────────────────────────────`;
 
-                const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `AI_рекомендации_${title.replace(/[^a-zа-яё0-9]/gi, '_')}_${Date.now()}.txt`;
+                    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `AI_рекомендации_${title.replace(/[^a-zа-яё0-9]/gi, '_')}_${Date.now()}.txt`;
 
-                document.body.appendChild(a);
-                a.click();
+                    document.body.appendChild(a);
+                    a.click();
 
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
 
-                showSaveNotification('✅ Рекомендации сохранены!');
+                    showSaveNotification('✅ Рекомендации сохранены!');
 
-            } catch (error) {
-                console.error('Ошибка сохранения:', error);
-                showSaveNotification('❌ Ошибка при сохранении');
+                } catch (error) {
+                    console.error('Ошибка сохранения:', error);
+                    showSaveNotification('❌ Ошибка при сохранении');
+                }
             }
-        }
 
-        function showAIResultModal(title, content, userName) {
-            const isMobile = window.innerWidth <= 480;
+            function showAIResultModal(title, content, userName) {
+                const isMobile = window.innerWidth <= 480;
 
-            const oldModal = document.getElementById('ai-result-modal');
-            if (oldModal) oldModal.remove();
+                const oldModal = document.getElementById('ai-result-modal');
+                if (oldModal) oldModal.remove();
 
-            const modalHTML = `
+                const modalHTML = `
 <div id="ai-result-modal" style="
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
     background: rgba(0,0,0,0.9); display: flex; justify-content: center; 
@@ -1006,30 +1060,30 @@ ${content}
     </div>
 </div>`;
 
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-            setTimeout(() => {
-                const buttons = document.querySelectorAll('#ai-result-modal button');
-                buttons.forEach(btn => {
-                    btn.addEventListener('mouseenter', function () {
-                        this.style.transform = 'translateY(-2px)';
-                        this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                setTimeout(() => {
+                    const buttons = document.querySelectorAll('#ai-result-modal button');
+                    buttons.forEach(btn => {
+                        btn.addEventListener('mouseenter', function () {
+                            this.style.transform = 'translateY(-2px)';
+                            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                        });
+                        btn.addEventListener('mouseleave', function () {
+                            this.style.transform = 'translateY(0)';
+                            this.style.boxShadow = 'none';
+                        });
                     });
-                    btn.addEventListener('mouseleave', function () {
-                        this.style.transform = 'translateY(0)';
-                        this.style.boxShadow = 'none';
-                    });
-                });
-            }, 100);
-        }
+                }, 100);
+            }
 
-        function printCurrentAdvice(title) {
-            const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
-            if (contentDiv) {
-                const content = contentDiv.textContent || contentDiv.innerText;
+            function printCurrentAdvice(title) {
+                const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
+                if (contentDiv) {
+                    const content = contentDiv.textContent || contentDiv.innerText;
 
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`
             <!DOCTYPE html>
             <html lang="ru">
             <head>
@@ -1070,48 +1124,48 @@ ${content}
             </body>
             </html>
         `);
-                printWindow.document.close();
+                    printWindow.document.close();
+                }
             }
-        }
 
-        function saveCurrentAdvice(title) {
-            const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
-            if (contentDiv) {
-                const content = contentDiv.textContent || contentDiv.innerText;
-                saveAIAdvice(title, content);
+            function saveCurrentAdvice(title) {
+                const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
+                if (contentDiv) {
+                    const content = contentDiv.textContent || contentDiv.innerText;
+                    saveAIAdvice(title, content);
+                }
             }
-        }
 
-        function showSaveNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
+            function showSaveNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
                 position: fixed; bottom: 20px; right: 20px; 
                 background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
                 color: white; padding: 12px 20px; border-radius: 8px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10001;
                 animation: slideIn 0.3s ease;
             `;
-            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
 
-            document.body.appendChild(notification);
+                document.body.appendChild(notification);
 
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 2000);
-        }
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }
 
-        const originalShowResult = showResult;
-        showResult = function (title, content) {
-            showAIResultModal(title, content, 'пользователя');
-        };
+            const originalShowResult = showResult;
+            showResult = function (title, content) {
+                showAIResultModal(title, content, 'пользователя');
+            };
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('✅ Service Worker зарегистрирован'))
-                .catch(err => console.log('❌ Ошибка Service Worker:', err));
-        }
-    </script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ Service Worker зарегистрирован'))
+                    .catch(err => console.log('❌ Ошибка Service Worker:', err));
+            }
+        </script>
 </body>
 
 </html>
