@@ -425,7 +425,7 @@
 
 <body>
     <div class="container">
-        <h1>🎯 Тестирование AI Специалистов</h1>
+        <h1>🎯 Твой личный ИИ консультант</h1>
 
         <div class="form-section">
             <h2>📝 Форма данных</h2>
@@ -467,7 +467,7 @@
                 <label>Уровень активности:</label>
                 <div class="radio-group">
                     <label class="radio-label"
-                        title="🛋️ НИЗКАЯ: офисная работа, нет тренировок, меньше 5000 шагов в день, сидячий образ жизни">
+                        title="🛋️ НИЗКАЯ: офисная работа, отсутствие физической активности, меньше 5000 шагов в день, сидячий образ жизни">
                         <input type="radio" name="test-activity" value="low" checked>
                         <span>Низкая</span>
                     </label>
@@ -488,9 +488,9 @@
                 <div class="form-group">
                     <label for="test-goal">Цель:</label>
                     <select id="test-goal">
-                        <option value="weight-loss">Похудение</option>
-                        <option value="muscle-gain">Набор массы</option>
-                        <option value="endurance">Выносливость</option>
+                        <option value="weight-loss">Сбросить лишний вес</option>
+                        <option value="muscle-gain">Набор мышечной массы</option>
+                        <option value="endurance">Кардио и выносливость</option>
                         <option value="health">Оздоровление</option>
                     </select>
                 </div>
@@ -504,33 +504,22 @@
             <div class="ai-buttons">
                 <button class="ai-button" id="trainer-btn">
                     <i class="fas fa-dumbbell"></i>
-                    🎯 Профессиональный тренер
-                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Элитный уровень</div>
+                    🎯 Персональная программа тренировок
                 </button>
 
                 <button class="ai-button" id="diet-btn">
                     <i class="fas fa-apple-alt"></i>
-                    🥗 Врач-нутрициолог
-                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Санаторный уровень</div>
+                    🥗 Сбалансированное питание
+
                 </button>
 
                 <button class="ai-button" id="energy-btn">
                     <i class="fas fa-bolt"></i>
-                    ⚡ Специалист по энергии
-                    <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Циркадные ритмы</div>
+                    ⚡ Сбалансированный распорядок дня
+
                 </button>
             </div>
 
-            <div style="margin-top: 20px; text-align: center;">
-                <button id="clear-cache-btn" style="
-                background: #ff6b6b; color: white; padding: 10px 20px;
-                border-radius: 8px; border: none; cursor: pointer;
-                font-size: 14px; display: inline-flex; align-items: center; gap: 8px;
-            ">
-                    <i class="fas fa-trash-alt"></i>
-                    Очистить кэш рекомендаций
-                </button>
-            </div>
         </div>
 
         <div class="result" id="result">
@@ -646,7 +635,7 @@
                     return;
                 }
 
-                showResult('🎯 Профессиональный тренер анализирует...', 'Запрос отправлен...');
+                showResult('🎯 Персональный тренер анализирует...', 'Запрос отправлен...');
 
                 try {
                     const result = await sendAIRequest('/api/trainer', 'Тренер', userData);
@@ -688,26 +677,12 @@
 
                 try {
                     const result = await sendAIRequest('/api/energy', 'Энергия', userData);
-                    showAIResultModal(`⚡ Рекомендации по энергии`, result.advice, userData.name);
+                    showAIResultModal(`⚡ Распорядок дня`, result.advice, userData.name);
                 } catch (error) {
                     showResult('❌ Ошибка при запросе к специалисту', error.message);
                 }
             });
 
-            document.getElementById('clear-cache-btn').addEventListener('click', async function () {
-                if (confirm('Очистить кэш рекомендаций? Это не удалит ваши данные, только сбросит кэшированные ответы AI.')) {
-                    try {
-                        const response = await fetch('/api/clean-cache', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        const result = await response.json();
-                        alert(result.message || 'Кэш очищен!');
-                    } catch (error) {
-                        alert('Ошибка очистки кэша');
-                    }
-                }
-            });
 
             window.fillTestData = function () {
                 document.getElementById('test-name').placeholder = 'Введите имя, например: Александр';
