@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- PWA метатеги -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+
+    <!-- Иконки для iOS/Android -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+
+    <title>Баланс тела</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 5% auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .ai-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .ai-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 15px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .ai-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .ai-button i {
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4ff;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            display: none;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result-title {
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-content {
+            color: #555;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .ai-buttons {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .ai-button {
+                padding: 20px 10px;
+                font-size: 15px;
+            }
+
+            .ai-button i {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            #ai-result-modal>div {
+                width: 95%;
+                max-width: 95%;
+                padding: 20px;
+                margin: 10px;
+                max-height: 90vh;
+            }
+
+            #ai-result-modal h3 {
+                font-size: 20px;
+            }
+
+            #ai-result-modal .buttons-container {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            #ai-result-modal button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 380px) and (max-width: 480px) {
+            .ai-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .ai-button {
+                padding: 18px 12px;
+                font-size: 15px;
+            }
+
+            #ai-result-modal>div {
+                max-width: 380px;
+                margin: 20px auto;
+            }
+
+            #ai-result-modal .buttons-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            #ai-result-modal button {
+                flex: 1;
+                min-width: 100px;
+            }
+
+            .radio-label {
+                gap: 4px;
+            }
+
+            span {
+                margin-left: -30%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .container {
+                padding: 10px;
+                margin: 5px;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+
+            .ai-button {
+                padding: 18px 8px;
+                font-size: 14px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            span {
+                margin-left: -30%;
+            }
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+
+        @supports (padding: max(0px)) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #ai-result-modal,
+            #ai-result-modal * {
+                visibility: visible;
+            }
+
+            #ai-result-modal {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            #ai-result-modal button {
+                display: none !important;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Тестирование AI Специалистов</h1>
+
+        <div class="form-section">
+            <h2>📝 Форма данных</h2>
+            <div class="form-group">
+                <label for="test-name">Имя:</label>
+                <input type="text" id="test-name" placeholder="Введите ваше имя">
+            </div>
+
+            <div class="form-group">
+                <label for="test-age">Возраст:</label>
+                <input type="number" id="test-age" placeholder="Возраст" min="10" max="100">
+            </div>
+
+            <div class="form-group">
+                <label>Пол:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="test-gender" value="male" checked>
+                        <span>👨 Мужской</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="test-gender" value="female">
+                        <span>👩 Женский</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="test-weight">Вес (кг):</label>
+                <input type="number" id="test-weight" placeholder="Вес в кг" min="30" max="200">
+            </div>
+
+            <div class="form-group">
+                <label for="test-height">Рост (см):</label>
+                <input type="number" id="test-height" placeholder="Рост в см" min="100" max="250">
+            </div>
+
+            <div class="form-group">
+                <label>Уровень активности:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="test-activity" value="low" checked>
+                        <span>Низкая</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="test-activity" value="medium">
+                        <span>Средняя</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="test-activity" value="high">
+                        <span>Высокая</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="test-goal">Цель:</label>
+                <select id="test-goal">
+                    <option value="weight-loss">Похудение</option>
+                    <option value="muscle-gain">Набор массы</option>
+                    <option value="endurance">Выносливость</option>
+                    <option value="health">Оздоровление</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="test-info">Дополнительная информация:</label>
+                <textarea id="test-info" rows="3" placeholder="Особые пожелания, травмы, ограничения..."></textarea>
+            </div>
+        </div>
+
+        <div class="ai-buttons">
+            <button class="ai-button" id="trainer-btn">
+                <i class="fas fa-dumbbell"></i>
+                🎯 Профессиональный тренер
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Элитный уровень</div>
+            </button>
+
+            <button class="ai-button" id="diet-btn">
+                <i class="fas fa-apple-alt"></i>
+                🥗 Врач-нутрициолог
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Санаторный уровень</div>
+            </button>
+
+            <button class="ai-button" id="energy-btn">
+                <i class="fas fa-bolt"></i>
+                ⚡ Специалист по энергии
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Циркадные ритмы</div>
+            </button>
+        </div>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <button id="clear-cache-btn" style="
+                background: #ff6b6b; color: white; padding: 10px 20px;
+                border-radius: 8px; border: none; cursor: pointer;
+                font-size: 14px; display: inline-flex; align-items: center; gap: 8px;
+            ">
+                <i class="fas fa-trash-alt"></i>
+                Очистить кэш рекомендаций
+            </button>
+        </div>
+    </div>
+
+    <div class="result" id="result">
+        <div class="result-title" id="result-title"></div>
+        <div class="result-content" id="result-content"></div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+
+        console.log('🌐 API URL:', API_URL);
+        console.log('🚀 Тест AI кнопок загружен');
+
+        function getTestFormData() {
+            return {
+                name: document.getElementById('test-name').value.trim(),
+                age: parseInt(document.getElementById('test-age').value) || 0,
+                gender: document.querySelector('input[name="test-gender"]:checked').value,
+                weight: parseFloat(document.getElementById('test-weight').value) || 0,
+                height: parseInt(document.getElementById('test-height').value) || 0,
+                activity: document.querySelector('input[name="test-activity"]:checked').value,
+                goal: document.getElementById('test-goal').value,
+                additionalInfo: document.getElementById('test-info').value.trim()
+            };
+        }
+
+        function validateForm(data) {
+            if (!data.name || data.name.length < 2) {
+                return '❌ Введите имя (минимум 2 символа)';
+            }
+            if (!data.age || data.age < 10 || data.age > 100) {
+                return '❌ Введите корректный возраст (10-100 лет)';
+            }
+            if (!data.weight || data.weight < 30 || data.weight > 200) {
+                return '❌ Введите корректный вес (30-200 кг)';
+            }
+            return null;
+        }
+
+        function showResult(title, content) {
+            alert(`Показываю: ${title}\nДлина текста: ${content?.length}`);
+            console.log('🚨 showResult вызван!', title, content?.length);
+
+            const resultDiv = document.getElementById('result');
+            const titleDiv = document.getElementById('result-title');
+            const contentDiv = document.getElementById('result-content');
+
+            console.log('🔍 Элементы:', {
+                resultDiv: !!resultDiv,
+                titleDiv: !!titleDiv,
+                contentDiv: !!contentDiv
+            });
+
+            if (!resultDiv || !titleDiv || !contentDiv) {
+                console.error('❌ Не найдены элементы для показа результата!');
+                alert('Ошибка: не найдены элементы на странице');
+                return;
+            }
+
+            titleDiv.textContent = title;
+            contentDiv.textContent = content;
+            resultDiv.classList.add('active');
+
+            console.log('✅ Результат установлен, класс добавлен');
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function sendAIRequest(endpoint, specialist, userData) {
+            try {
+                console.log(`📤 Отправка запроса на ${endpoint}:`, userData);
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userData: userData,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                console.log('📥 Ответ сервера:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ Данные получены:', data);
+
+                if (data.weightChange) {
+                    setTimeout(() => {
+                        showWeightChangeNotification(data.weightChange);
+                    }, 1000);
+                }
+
+                return data;
+
+            } catch (error) {
+                console.error('🔥 Ошибка:', error);
+                throw error;
+            }
+        }
+
+        document.getElementById('trainer-btn').addEventListener('click', async function () {
+            const userData = getTestFormData();
+            const error = validateForm(userData);
+
+            if (error) {
+                alert(error);
+                return;
+            }
+
+            showResult('🎯 Профессиональный тренер анализирует...', 'Запрос отправлен...');
+
+            try {
+                const result = await sendAIRequest('/api/trainer', 'Тренер', userData);
+                showAIResultModal(`🎯 Рекомендации тренера`, result.advice, userData.name);
+            } catch (error) {
+                showResult('❌ Ошибка при запросе к тренеру', error.message);
+            }
+        });
+
+        document.getElementById('diet-btn').addEventListener('click', async function () {
+            const userData = getTestFormData();
+            const error = validateForm(userData);
+
+            if (error) {
+                alert(error);
+                return;
+            }
+
+            showResult('🥗 Врач-нутрициолог анализирует...', 'Запрос отправлен...');
+
+            try {
+                const result = await sendAIRequest('/api/diet', 'Диетолог', userData);
+                showAIResultModal(`🥗 Рекомендации диетолога`, result.advice, userData.name);
+            } catch (error) {
+                showResult('❌ Ошибка при запросе к диетологу', error.message);
+            }
+        });
+
+        document.getElementById('energy-btn').addEventListener('click', async function () {
+            const userData = getTestFormData();
+            const error = validateForm(userData);
+
+            if (error) {
+                alert(error);
+                return;
+            }
+
+            showResult('⚡ Специалист по энергии анализирует...', 'Запрос отправлен...');
+
+            try {
+                const result = await sendAIRequest('/api/energy', 'Энергия', userData);
+                showAIResultModal(`⚡ Рекомендации по энергии`, result.advice, userData.name);
+            } catch (error) {
+                showResult('❌ Ошибка при запросе к специалисту', error.message);
+            }
+        });
+
+        document.getElementById('clear-cache-btn').addEventListener('click', async function () {
+            if (confirm('Очистить кэш рекомендаций? Это не удалит ваши данные, только сбросит кэшированные ответы AI.')) {
+                try {
+                    const response = await fetch('/api/clean-cache', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    alert(result.message || 'Кэш очищен!');
+                } catch (error) {
+                    alert('Ошибка очистки кэша');
+                }
+            }
+        });
+
+        window.fillTestData = function () {
+            document.getElementById('test-name').placeholder = 'Введите имя, например: Александр';
+            document.getElementById('test-age').placeholder = 'Введите возраст, например: 35';
+            document.getElementById('test-weight').placeholder = 'Введите вес в кг, например: 85';
+            document.getElementById('test-height').placeholder = 'Введите рост в см, например: 180';
+            document.getElementById('test-info').placeholder = 'Опишите вашу цель, например: Хочу улучшить выносливость и сбросить 10 кг';
+
+            console.log('✅ Примеры установлены');
+        };
+
+        console.log('💡 Для быстрого теста введите в консоли: fillTestData()');
+
+        setTimeout(() => {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                fillTestData();
+                console.log('✅ Автозаполнено тестовыми данными');
+            }
+        }, 1000);
+
+        function showWeightChangeNotification(weightData) {
+            if (!weightData) return;
+
+            const notificationHTML = `
+            <div id="weight-notification" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${weightData.type === 'success' ?
+                    'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
+                    'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
+                color: white;
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10001;
+                max-width: 350px;
+                animation: slideInRight 0.5s ease;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            ">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 32px;">${weightData.emoji}</div>
+                    <div>
+                        <div style="font-size: 18px; font-weight: 600;">${weightData.title}</div>
+                        <div style="font-size: 14px; opacity: 0.9;">${weightData.message}</div>
+                    </div>
+                </div>
+                
+                <div style="
+                    background: rgba(255,255,255,0.2); 
+                    padding: 12px; 
+                    border-radius: 8px; 
+                    margin-bottom: 15px;
+                    font-size: 14px;
+                ">
+                    ${weightData.details}
+                    ${weightData.suggestion ? `<div style="margin-top: 8px; font-style: italic;">💡 ${weightData.suggestion}</div>` : ''}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <button onclick="document.getElementById('weight-notification').remove()" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 1px solid rgba(255,255,255,0.3);
+                        color: white;
+                        padding: 8px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">
+                        Закрыть
+                    </button>
+                    
+                    <button onclick="showWeightHistory()" style="
+                        background: rgba(255,255,255,0.3);
+                        border: none;
+                        color: white;
+                        padding: 8px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <i class="fas fa-chart-line"></i>
+                        История
+                    </button>
+                </div>
+            </div>`;
+
+            const oldNotification = document.getElementById('weight-notification');
+            if (oldNotification) oldNotification.remove();
+
+            document.body.insertAdjacentHTML('beforeend', notificationHTML);
+
+            setTimeout(() => {
+                const notification = document.getElementById('weight-notification');
+                if (notification) {
+                    notification.style.animation = 'slideOutRight 0.5s ease';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 10000);
+        }
+
+        async function showWeightHistory() {
+            try {
+                const userData = getTestFormData();
+                const response = await fetch('/api/weight-history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userData })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.history && data.history.length > 0) {
+                    showWeightHistoryModal(data);
+                } else {
+                    alert('📊 История веса пока недоступна или пуста');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки истории:', error);
+                alert('Не удалось загрузить историю веса');
+            }
+        }
+
+        function showWeightHistoryModal(historyData) {
+            const modalHTML = `
+            <div id="weight-history-modal" style="
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.8); z-index: 10002;
+                display: flex; justify-content: center; align-items: center;
+                padding: 20px;
+            ">
+                <div style="
+                    background: white; padding: 25px; border-radius: 15px;
+                    max-width: 500px; width: 100%; max-height: 80vh;
+                    overflow-y: auto; position: relative;
+                ">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #667eea; margin: 0;">
+                            <i class="fas fa-chart-line"></i> История веса
+                        </h3>
+                        <button onclick="document.getElementById('weight-history-modal').remove()" style="
+                            background: none; border: none; font-size: 24px;
+                            cursor: pointer; color: #666; padding: 0;
+                        ">×</button>
+                    </div>
+                    
+                    ${historyData.summary && historyData.summary.totalChange !== 0 ? `
+                    <div style="
+                        background: ${historyData.summary.totalChange < 0 ?
+                        'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
+                        'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)'};
+                        color: white; padding: 15px; border-radius: 10px;
+                        margin-bottom: 20px; text-align: center;
+                    ">
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 5px;">
+                            ${historyData.summary.totalChange < 0 ? '🎉 Похудение!' : '📈 Изменение веса'}
+                        </div>
+                        <div style="font-size: 14px;">
+                            ${historyData.summary.periodDays ? `За ${historyData.summary.periodDays} дней: ` : ''}
+                            ${historyData.summary.totalChange < 0 ? 'минус' : 'плюс'} 
+                            ${Math.abs(historyData.summary.totalChange)} кг
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    ${historyData.history && historyData.history.length > 0 ? `
+                    <div style="margin-bottom: 20px;">
+                        <div style="
+                            display: grid; grid-template-columns: 1fr 1fr 1fr;
+                            gap: 10px; margin-bottom: 10px; font-weight: 600;
+                            color: #667eea; padding-bottom: 10px; border-bottom: 2px solid #667eea;
+                        ">
+                            <div>Дата</div>
+                            <div>Вес</div>
+                            <div>Разница</div>
+                        </div>
+                        
+                        ${historyData.history.map((record, index) => {
+                            const date = new Date(record.date).toLocaleDateString();
+                            const prevWeight = index < historyData.history.length - 1 ?
+                                historyData.history[index + 1].weight : null;
+                            const diff = prevWeight ? (record.weight - prevWeight).toFixed(1) : '—';
+                            const diffColor = diff === '—' ? '#666' :
+                                parseFloat(diff) < 0 ? '#4CAF50' : '#F44336';
+
+                            return `
+                            <div style="
+                                display: grid; grid-template-columns: 1fr 1fr 1fr;
+                                gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee;
+                                ${index === 0 ? 'font-weight: 600; background: #f8f9fa; padding: 10px; border-radius: 5px;' : ''}
+                            ">
+                                <div>${date} ${record.daysAgo === 0 ? '(сегодня)' : record.daysAgo ? `(${record.daysAgo} дн. назад)` : ''}</div>
+                                <div>${record.weight} кг</div>
+                                <div style="color: ${diffColor}">
+                                    ${diff !== '—' ? (parseFloat(diff) > 0 ? '+' : '') + diff + ' кг' : diff}
+                                </div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    ` : '<div style="text-align: center; padding: 20px; color: #666;">История веса пока пуста</div>'}
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="document.getElementById('weight-history-modal').remove()" style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white; border: none; padding: 12px 30px;
+                            border-radius: 8px; cursor: pointer; font-weight: 600;
+                        ">
+                            Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+            const oldModal = document.getElementById('weight-history-modal');
+            if (oldModal) oldModal.remove();
+
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function saveAIAdvice(title, content) {
+            try {
+                const text = `╔══════════════════════════════════════╗
+║           ${title.toUpperCase()}           ║
+╚══════════════════════════════════════╝
+
+${content}
+
+──────────────────────────────────────
+📅 Создано: ${new Date().toLocaleString()}
+👤 Пользователь: ${document.getElementById('test-name').value || 'Не указано'}
+⚡ Система: Баланс тела AI
+──────────────────────────────────────`;
+
+                const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `AI_рекомендации_${title.replace(/[^a-zа-яё0-9]/gi, '_')}_${Date.now()}.txt`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+                showSaveNotification('✅ Рекомендации сохранены!');
+
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                showSaveNotification('❌ Ошибка при сохранении');
+            }
+        }
+
+        function showAIResultModal(title, content, userName) {
+            const isMobile = window.innerWidth <= 480;
+
+            const oldModal = document.getElementById('ai-result-modal');
+            if (oldModal) oldModal.remove();
+
+            const modalHTML = `
+<div id="ai-result-modal" style="
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.9); display: flex; justify-content: center; 
+    align-items: ${isMobile ? 'flex-start' : 'center'}; 
+    z-index: 10000; padding: ${isMobile ? '10px' : '20px'}; 
+    box-sizing: border-box; overflow-y: auto;
+">
+    <div style="
+        background: white; padding: ${isMobile ? '15px' : '25px'}; 
+        border-radius: ${isMobile ? '12px' : '16px'}; 
+        width: ${isMobile ? '100%' : '90%'}; 
+        max-width: ${isMobile ? '100%' : '600px'}; 
+        max-height: ${isMobile ? 'calc(100vh - 20px)' : '85vh'}; 
+        overflow: hidden; display: flex; flex-direction: column;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        margin-top: ${isMobile ? '10px' : '0'};
+    ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="color: #667eea; margin: 0; font-size: ${isMobile ? '18px' : '22px'}; font-weight: 600;">
+                ${title}
+            </h3>
+            <button onclick="document.getElementById('ai-result-modal').remove()" style="
+                background: #f0f0f0; border: none; width: ${isMobile ? '32px' : '36px'}; 
+                height: ${isMobile ? '32px' : '36px'}; border-radius: 50%; 
+                font-size: ${isMobile ? '20px' : '24px'}; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                color: #666; padding: 0; line-height: 1; flex-shrink: 0;
+            ">×</button>
+        </div>
+        
+        <div style="
+            background: #f8f9ff; padding: ${isMobile ? '15px' : '20px'}; 
+            border-radius: ${isMobile ? '10px' : '12px'};
+            border-left: 4px solid #667eea; flex-grow: 1;
+            overflow-y: auto; margin-bottom: ${isMobile ? '15px' : '20px'}; 
+            font-size: ${isMobile ? '14px' : '15px'};
+        ">
+            <div style="white-space: pre-wrap; line-height: 1.6; color: #333;">
+                ${content}
+            </div>
+        </div>
+        
+        <div style="
+            display: flex; gap: ${isMobile ? '10px' : '15px'}; 
+            justify-content: ${isMobile ? 'space-between' : 'center'};
+            ${isMobile ? 'flex-direction: column;' : ''}
+        ">
+            <button onclick="saveCurrentAdvice('${title.replace(/'/g, "\\'")}')" style="
+                background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); 
+                color: white; border: none;
+                padding: 12px 25px; border-radius: 8px; cursor: pointer;
+                font-weight: 600; font-size: 14px; display: flex; align-items: center;
+                justify-content: center; gap: 8px; flex: ${isMobile ? '1' : 'none'};
+                transition: all 0.3s;
+            ">
+                <i class="fas fa-download" style="font-size: 16px;"></i>
+                Сохранить
+            </button>
+            
+            <button onclick="printCurrentAdvice('${title.replace(/'/g, "\\'")}')" style="
+                background: linear-gradient(135deg, #2196F3 0%, #0D47A1 100%); 
+                color: white; border: none;
+                padding: 12px 25px; border-radius: 8px; cursor: pointer;
+                font-weight: 600; font-size: 14px; display: flex; align-items: center;
+                justify-content: center; gap: 8px; flex: ${isMobile ? '1' : 'none'};
+                transition: all 0.3s;
+            ">
+                <i class="fas fa-print" style="font-size: 16px;"></i>
+                Печать
+            </button>
+            
+            <button onclick="document.getElementById('ai-result-modal').remove()" style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; border: none;
+                padding: 12px 25px; border-radius: 8px; cursor: pointer;
+                font-weight: 600; font-size: 14px; display: flex; align-items: center;
+                justify-content: center; gap: 8px; flex: ${isMobile ? '1' : 'none'};
+                transition: all 0.3s;
+            ">
+                <i class="fas fa-times" style="font-size: 16px;"></i>
+                Закрыть
+            </button>
+        </div>
+    </div>
+</div>`;
+
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            setTimeout(() => {
+                const buttons = document.querySelectorAll('#ai-result-modal button');
+                buttons.forEach(btn => {
+                    btn.addEventListener('mouseenter', function () {
+                        this.style.transform = 'translateY(-2px)';
+                        this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                    });
+                    btn.addEventListener('mouseleave', function () {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = 'none';
+                    });
+                });
+            }, 100);
+        }
+
+        function printCurrentAdvice(title) {
+            const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
+            if (contentDiv) {
+                const content = contentDiv.textContent || contentDiv.innerText;
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="ru">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .title { color: #667eea; font-size: 24px; margin-bottom: 10px; }
+                    .date { color: #666; font-size: 14px; }
+                    .content { background: #f8f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
+                    @media print {
+                        body { padding: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="title">${title}</div>
+                    <div class="date">Создано: ${new Date().toLocaleString()}</div>
+                </div>
+                <div class="content">${content.replace(/\n/g, '<br>')}</div>
+                <div class="no-print" style="text-align: center; margin-top: 30px;">
+                    <button onclick="window.print()" style="
+                        background: #667eea; color: white; border: none;
+                        padding: 10px 20px; border-radius: 5px; cursor: pointer;
+                    ">🖨️ Печать</button>
+                    <button onclick="window.close()" style="
+                        background: #666; color: white; border: none;
+                        padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-left: 10px;
+                    ">Закрыть</button>
+                </div>
+                <script>
+                    setTimeout(() => window.print(), 500);
+                <\/script>
+            </body>
+            </html>
+        `);
+                printWindow.document.close();
+            }
+        }
+
+        function saveCurrentAdvice(title) {
+            const contentDiv = document.querySelector('#ai-result-modal [style*="background: #f8f9ff"] div');
+            if (contentDiv) {
+                const content = contentDiv.textContent || contentDiv.innerText;
+                saveAIAdvice(title, content);
+            }
+        }
+
+        function showSaveNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; 
+                background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+                color: white; padding: 12px 20px; border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10001;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        const originalShowResult = showResult;
+        showResult = function (title, content) {
+            showAIResultModal(title, content, 'пользователя');
+        };
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log('✅ Service Worker зарегистрирован'))
+                .catch(err => console.log('❌ Ошибка Service Worker:', err));
+        }
+    </script>
+</body>
+
+</html>
