@@ -336,7 +336,7 @@ app.post('/api/query', async (req, res) => {
     try {
         const { model, messages, max_tokens, temperature } = req.body;
 
-        const FIREWORKS_API_KEY = 'fw_8xD76SxbTANnjU33ENAxbK';
+        const FIREWORKS_API_KEY = 'fw_EXTBMoWvXUVmEvSn5knKLF';
         if (!FIREWORKS_API_KEY) {
             return res.status(500).json({
                 success: false,
@@ -1291,5 +1291,6 @@ app.listen(PORT, () => {
     console.log(`🤖 AI интеграция: Fireworks активна`);
     console.log(`📂 Файловый кэш: порог ±${WEIGHT_THRESHOLD} кг, срок ${CACHE_TTL / (7 * 24 * 60 * 60 * 1000)} недель`);
 });
+
 
 module.exports = app;
