@@ -336,7 +336,7 @@ app.post('/api/query', async (req, res) => {
     try {
         const { model, messages, max_tokens, temperature } = req.body;
 
-        const FIREWORKS_API_KEY = 'fw_EXTBMoWvXUVmEvSn5knKLF';
+        const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY;
         if (!FIREWORKS_API_KEY) {
             return res.status(500).json({
                 success: false,
@@ -1294,3 +1294,4 @@ app.listen(PORT, () => {
 
 
 module.exports = app;
+
