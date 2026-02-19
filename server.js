@@ -1007,7 +1007,7 @@ async function getAIResponse(prompt, specialist) {
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error('AI ошибка:', error);
-        return `Рекомендации от ${specialist} временно недоступны. Обратитесь позже.`;
+       return `Ошибка AI: ${error.message}. Детали: ${JSON.stringify(error.response?.data || 'Нет данных')}`;
     }
 }
 
@@ -1294,4 +1294,5 @@ app.listen(PORT, () => {
 
 
 module.exports = app;
+
 
