@@ -460,7 +460,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/deepseek-v3-0324',
+               model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages: [
                     {
                         role: 'system',
@@ -1294,5 +1294,6 @@ app.listen(PORT, () => {
 
 
 module.exports = app;
+
 
 
