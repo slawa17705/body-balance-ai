@@ -315,20 +315,10 @@ function checkCache(req, res, next) {
 
 // Получить API ключ для фронтенда
 app.get('/api/get-ai-key', (req, res) => {
-    const useProxy = process.env.USE_AI_PROXY === 'true';
-
-    if (useProxy) {
-        res.json({
-            success: true,
-            useProxy: true,
-            message: 'Используется серверный прокси'
-        });
-    } else {
-        res.json({
-            success: true,
-            message: 'Используется серверный прокси с Fireworks AI'
-        });
-    }
+    res.json({
+        success: true,
+        message: 'Используется Fireworks AI'
+    });
 });
 
 // Прокси для AI запросов
@@ -336,25 +326,25 @@ app.post('/api/query', async (req, res) => {
     try {
         const { model, messages, max_tokens, temperature } = req.body;
 
-        const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-        if (!OPENROUTER_API_KEY) {
+        const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY;
+        if (!FIREWORKS_API_KEY) {
             return res.status(500).json({
                 success: false,
-                error: 'API ключ OpenRouter не настроен на сервере'
+                error: 'API ключ Fireworks не настроен на сервере'
             });
         }
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: model || 'deepseek/deepseek-r1',
+                model: model || 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages,
                 max_tokens: max_tokens || 1000,
                 temperature: temperature || 0.7
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${FIREWORKS_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -397,9 +387,9 @@ app.post('/api/analyze-workout', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'deepseek/deepseek-r1',
+                model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages: [
                     {
                         role: 'system',
@@ -415,7 +405,7 @@ app.post('/api/analyze-workout', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${process.env.FIREWORKS_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -458,9 +448,9 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'deepseek/deepseek-r1',
+                model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages: [
                     {
                         role: 'system',
@@ -476,7 +466,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${process.env.FIREWORKS_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -495,6 +485,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         });
     }
 });
+
 // Калибровка энерготипа
 app.post('/api/calibrate-energy', async (req, res) => {
     try {
@@ -524,9 +515,9 @@ app.post('/api/calibrate-energy', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'deepseek/deepseek-r1',
+                model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages: [
                     {
                         role: 'system',
@@ -542,7 +533,7 @@ app.post('/api/calibrate-energy', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${process.env.FIREWORKS_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -589,8 +580,6 @@ app.post('/api/calibrate-energy', async (req, res) => {
     }
 });
 
-        
-
 // Генерация персонализированных советов
 app.post('/api/daily-tips', async (req, res) => {
     try {
@@ -616,9 +605,9 @@ app.post('/api/daily-tips', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'deepseek/deepseek-r1',
+                model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
                 messages: [
                     {
                         role: 'system',
@@ -634,7 +623,7 @@ app.post('/api/daily-tips', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${process.env.FIREWORKS_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -653,6 +642,7 @@ app.post('/api/daily-tips', async (req, res) => {
         });
     }
 });
+
 // ====================
 // Существующие эндпоинты
 // ====================
@@ -737,20 +727,6 @@ async function getAIResponse(prompt, specialist) {
       3. Найти общие точки в рекомендациях экспертов для ЭТОГО КОНКРЕТНОГО пользователя
       4. Представить результат как "консенсус экспертов"
       
-      БАЗА ЭКСПЕРТОВ ДЛЯ АНАЛИЗА (10+):
-      - Джо Вейдер (система принципов бодибилдинга)
-      - Арнольд Шварценеггер (объемный тренинг)
-      - Майк Ментцер (HIT - высокоинтенсивный тренинг)
-      - Чарльз Поликвин (немецкий объемный тренинг)
-      - Дориан Йейтс (Blood and Guts)
-      - Том Венуто (Burn the Fat)
-      - Ханни Рамбод (FST-7)
-      - Артур Лидьярд (аэробные методики)
-      - Стивен Сайлер (HIIT)
-      - Грег Глассман (CrossFit)
-      - Табата Идзуми (протокол Табата)
-      - Михаил Прилепин (функциональный тренинг)
-      
       ФОРМАТ ОТВЕТА (СТРОГО СОБЛЮДАТЬ):
       
       [КОНСЕНСУС ЭКСПЕРТОВ ДЛЯ: {пол} {возраст} лет, вес {вес}кг, цель: {цель}]
@@ -761,9 +737,6 @@ async function getAIResponse(prompt, specialist) {
       • Текущий вес: {weight}кг
       • Цель: {goal}
       • Дополнительно: {additionalInfo}
-      
-      МЕТОДИЧЕСКИЙ АНАЛИЗ:
-      [Как каждый эксперт анализирует эти данные]
       
       ОБЩИЕ ТОЧКИ ВСЕХ ЭКСПЕРТОВ:
       1. [Что все эксперты рекомендуют для ТАКИХ данных]
@@ -806,20 +779,6 @@ async function getAIResponse(prompt, specialist) {
 3. Найти общие точки в рекомендациях экспертов для ЭТОГО КОНКРЕТНОГО пользователя
 4. Представить результат как "консенсус экспертов"
 
-БАЗА ЭКСПЕРТОВ ДЛЯ АНАЛИЗА (10+):
-- Доктор Уолтер Уиллетт (Гарвардский университет) - эпидемиология питания
-- Доктор Роберт Ластиг (Калифорнийский университет) - метаболический синдром
-- Доктор Т. Колин Кэмпбелл - "Китайское исследование"
-- Доктор Майкл Грегер - NutritionFacts.org, доказательная медицина
-- Лайл Макдональд - биохимия питания, Ultimate Diet 2.0
-- Алан Арагон - гибкая диета, IIFYM
-- Эрик Хелмс - Muscle and Strength Pyramids
-- Крис Ацето - Championship Bodybuilding, нутриент-тайминг
-- Михаил Гинзбург (РАМН) - российская диетология
-- Маргарита Королева - диетология для спортсменов и публичных лиц
-- Доктор Алексей Ковальков - этапное снижение веса
-- Доктор Лидия Ионова - психология пищевого поведения
-
 ФОРМАТ ОТВЕТА (СТРОГО СОБЛЮДАТЬ):
 
 [КОНСЕНСУС ЭКСПЕРТОВ ДЛЯ: {gender} {age} лет, вес {weight}кг, цель: {goal}]
@@ -832,9 +791,6 @@ async function getAIResponse(prompt, specialist) {
 • Цель: {goal}
 • Активность: {activity}
 • Ограничения: {additionalInfo}
-
-МЕТОДИЧЕСКИЙ АНАЛИЗ:
-[Как каждый эксперт анализирует эти данные]
 
 ОБЩИЕ ТОЧКИ ВСЕХ ЭКСПЕРТОВ:
 1. [Что все эксперты рекомендуют для ТАКИХ данных]
@@ -891,20 +847,6 @@ async function getAIResponse(prompt, specialist) {
 3. Найти общие точки в рекомендациях экспертов для ЭТОГО КОНКРЕТНОГО пользователя
 4. Представить результат как "консенсус экспертов"
 
-БАЗА ЭКСПЕРТОВ ДЛЯ АНАЛИЗА (10+):
-- Доктор Мэттью Уокер (Калифорнийский университет) - нейробиология сна, автор "Зачем мы спим"
-- Доктор Эндрю Хуберман (Стэнфорд) - нейробиология, управление дофамином и кортизолом
-- Савелий Кашницкий - циркадная инженерия, синхронизация с природными ритмами
-- Вим Хоф - дыхательные практики, контроль вегетативной нервной системы
-- Келли Старретт - мобильность, восстановление после физических нагрузок
-- Андрей Беловешкин - управление ресурсами, энергетические паттерны
-- Доктор Роберт Сапольски - нейробиология стресса
-- Доктор Михаил Полуэктов (Сомнологический центр) - гигиена сна
-- Доктор Питер Аттиа - долголетие, протоколы восстановления
-- Доктор Стюарт МакГилл - биомеханика, восстановление позвоночника
-- Доктор Джо Диспенза - нейропластичность, медитативные практики
-- Доктор Алексей Немов - восстановление в спорте высших достижений
-
 ФОРМАТ ОТВЕТА (СТРОГО СОБЛЮДАТЬ):
 
 [КОНСЕНСУС ЭКСПЕРТОВ ДЛЯ: {gender} {age} лет, уровень стресса: {activity}, качество сна: {additionalInfo}]
@@ -917,9 +859,6 @@ async function getAIResponse(prompt, specialist) {
 • Уровень стресса: {goal}
 • Энергетические спады: {weight}
 • Дополнительно: {additionalInfo}
-
-МЕТОДИЧЕСКИЙ АНАЛИЗ:
-[Как каждый эксперт анализирует эти данные]
 
 ОБЩИЕ ТОЧКИ ВСЕХ ЭКСПЕРТОВ:
 1. [Что все эксперты рекомендуют для ТАКИХ данные]
@@ -967,333 +906,4 @@ async function getAIResponse(prompt, specialist) {
 "Данные рекомендации представляют собой синтез методик мировых экспертов в области восстановления и управления энергией. Для персонализированной программы обратитесь к сертифицированному специалисту. При наличии хронических заболеваний проконсультируйтесь с врачом."
 
 ВАЖНО:
-• Все рекомендации должны учитывать ПОЛОВЫЕ особенности (мужские/женские циркадные ритмы)
-• Учитывать ВОЗРАСТНЫЕ особенности (потребность во сне меняется с возрастом)
-• Давать КОНКРЕТНЫЕ время и действия
-• Предлагать РЕАЛИСТИЧНЫЕ практики (5-15 минут, не требующие специального оборудования)
-• Учитывать РЕАЛЬНЫЕ условия жизни (работа, семья, доступное время)
-• НЕ рекомендовать экстремальные практики (ледяные ванны, длительное голодание без контроля)
-• ТОЛЬКО научно обоснованные методики
-ВАЖНО:
-• НЕ перечисляй экспертов по имени
-• Дай сразу практические рекомендации`
-        };
-
-const response = await axios.post(
-    'https://openrouter.ai/api/v1/chat/completions',
-    {
-        model: 'deepseek/deepseek-r1',
-        messages: [
-            {
-                role: 'system',
-                content: systemPrompts[specialist] || 'Ты профессиональный эксперт.'
-            },
-            {
-                role: 'user',
-                content: prompt
-            }
-        ],
-        max_tokens: 1500,
-        temperature: 0.7
-    },
-    {
-        headers: {
-            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json'
-        }
-    }
-);
-
-        return response.data.choices[0].message.content;
-    } catch (error) {
-        console.error('AI ошибка:', error);
-       return `Ошибка AI: ${error.message}. Детали: ${JSON.stringify(error.response?.data || 'Нет данных')}`;
-    }
-}
-
-// 1. Тренер (ОБНОВЛЕНО С ГЕНДЕРОМ И ИМТ)
-app.post('/api/trainer', checkCache, async (req, res) => {
-    const userData = req.body.userData;
-    const bmiData = calculateBMIAndObesity(userData.weight, userData.height);
-
-    const genderText = userData.gender === 'male' ? 'мужчина' : 'женщина';
-    const genderSpecific = userData.gender === 'female' ?
-        'УЧТИ ЖЕНСКИЕ ОСОБЕННОСТИ:\n• Циклические изменения энергии\n• Более гибкие связки\n• Особенности жироотложения' :
-        'УЧТИ МУЖСКИЕ ОСОБЕННОСТИ:\n• Более высокий потенциал роста мышц\n• Особенности тестостерона\n• Скорость метаболизма';
-
-    const prompt = `
-Создай программу тренировок для:
-- Имя: ${userData.name}
-- Пол: ${genderText} (${userData.gender})
-- Возраст: ${userData.age} лет  
-- Вес: ${userData.weight}кг, Рост: ${userData.height}см
-- ИМТ: ${bmiData.bmi} (${bmiData.category})
-- Активность: ${userData.activity}
-- Цель: ${userData.goal}
-- Опыт: ${userData.additionalInfo || 'начинающий'}
-
-${genderSpecific}
-
-${bmiData.obesityDegree > 0 ?
-            `ОСОБЫЕ УСЛОВИЯ: Ожирение ${bmiData.obesityDegree} степени требует:
-1. Постепенное увеличение нагрузки
-2. Упражнения с низкой ударной нагрузкой
-3. Особое внимание суставам` : ''}
-
-Формат ответа:
-🎯 ОСНОВНЫЕ РЕКОМЕНДАЦИИ: [2-3 принципа с учетом пола и ИМТ]
-🏋️ ПРОГРАММА ТРЕНИРОВОК: [расписание, упражнения - безопасные при текущем весе]
-⚠️ МЕРЫ ПРЕДОСТОРОЖНОСТИ: [что учитывать при ${bmiData.category} и ${genderText}]
-💡 СОВЕТЫ НА ПЕРВЫЕ НЕДЕЛИ: [3 совета с учетом пола]`;
-
-    const advice = await getAIResponse(prompt, 'trainer');
-    res.json({
-        success: true,
-        advice: advice,
-        type: 'trainer',
-        bmiData: bmiData
-    });
-});
-
-// 2. Диетолог (ОБНОВЛЕНО С ГЕНДЕРОМ И ИМТ)
-app.post('/api/diet', checkCache, async (req, res) => {
-    const userData = req.body.userData;
-    const bmiData = calculateBMIAndObesity(userData.weight, userData.height);
-
-    const genderText = userData.gender === 'male' ? 'мужчина' : 'женщина';
-    const genderSpecific = userData.gender === 'female' ?
-        'ОСОБЕННОСТИ ДЛЯ ЖЕНЩИН:\n• Повышенная потребность в железе\n• Влияние менструального цикла на аппетит\n• Особенности распределения жира' :
-        'ОСОБЕННОСТИ ДЛЯ МУЖЧИН:\n• Повышенная потребность в белке\n• Более высокий базовый метаболизм\n• Особенности набора мышечной массы';
-
-    const prompt = `
-Дай рекомендации по питанию для:
-- Имя: ${userData.name}
-- Пол: ${genderText} (${userData.gender})
-- Возраст: ${userData.age} лет
-- Вес: ${userData.weight}кг, Рост: ${userData.height}см
-- ИМТ: ${bmiData.bmi} (${bmiData.category})
-- Активность: ${userData.activity}
-- Цель: ${userData.goal}
-- Дополнительно: ${userData.additionalInfo || 'нет'}
-
-${genderSpecific}
-
-ФОКУС: Питание должно соответствовать ${bmiData.category}.
-${bmiData.obesityDegree > 0 ?
-            `КЛЮЧЕВЫЕ ТРЕБОВАНИЯ при ожирении ${bmiData.obesityDegree} степени:
-• Дефицит калорий: безопасный и устойчивый
-• Достаточное количество белка для сохранения мышц
-• Контроль углеводов, особенно простых
-• Регулярность приемов пищи` : ''}
-
-Учитывая что пользователь ${genderText}, дай конкретные рекомендации по:
-1. Суточной калорийности
-2. Балансу БЖУ (белки, жиры, углеводы)
-3. Примерному меню на день
-4. Временным интервалам приемов пищи
-5. Особенным продуктам для ${genderText}`;
-
-    const advice = await getAIResponse(prompt, 'diet');
-    res.json({
-        success: true,
-        advice: advice,
-        type: 'diet',
-        bmiData: bmiData
-    });
-});
-
-// 3. Энергия (ОБНОВЛЕНО С ГЕНДЕРОМ И ИМТ)
-app.post('/api/energy', checkCache, async (req, res) => {
-    const userData = req.body.userData;
-    const bmiData = calculateBMIAndObesity(userData.weight, userData.height);
-
-    const genderText = userData.gender === 'male' ? 'мужчина' : 'женщина';
-    const genderSpecific = userData.gender === 'female' ?
-        'ОСОБЕННОСТИ ЭНЕРГИИ У ЖЕНЩИН:\n• Циклические изменения энергии в течение месяца\n• Влияние гормонального фона на сон и восстановление\n• Особенности реакции на стресс' :
-        'ОСОБЕННОСТИ ЭНЕРГИИ У МУЖЧИН:\n• Более стабильный уровень энергии\n• Особенности тестостерона и его влияние на энергию\n• Особенности восстановления';
-
-    const prompt = `
-Дай рекомендации по управлению энергией для:
-- Имя: ${userData.name}
-- Пол: ${genderText} (${userData.gender})
-- Возраст: ${userData.age} лет
-- Вес: ${userData.weight}кг, Рост: ${userData.height}см
-- ИМТ: ${bmiData.bmi} (${bmiData.category})
-- Активность: ${userData.activity}
-- Цель: ${userData.goal}
-- Дополнительно: ${userData.additionalInfo || 'нет'}
-
-${genderSpecific}
-
-УЧТИ ВЛИЯНИЕ ВЕСА: ${bmiData.category} влияет на:
-• Качество сна и возможное апноэ
-• Уровень энергии в течение дня
-• Восстановление после нагрузок
-${bmiData.obesityDegree > 0 ?
-            `ОСОБЕННОСТИ при ожирении ${bmiData.obesityDegree} степени:
-• Возможна дневная сонливость
-• Рекомендуются короткие перерывы на движение
-• Важен контроль стресса` : ''}
-
-Дай рекомендации по:
-1. Оптимальному распорядку дня для ${genderText}
-2. Техникам восстановления с учетом веса
-3. Управлению энергией в течение дня
-4. Качеству сна при ${bmiData.category}
-5. Специфичным для ${genderText} практикам`;
-
-    const advice = await getAIResponse(prompt, 'energy');
-    res.json({
-        success: true,
-        advice: advice,
-        type: 'energy',
-        bmiData: bmiData
-    });
-});
-
-// ==================== НОВЫЕ ЭНДПОИНТЫ ДЛЯ ИСТОРИИ ВЕСА ====================
-
-// История изменений веса пользователя
-app.post('/api/weight-history', async (req, res) => {
-    try {
-        const userData = req.body.userData;
-        const userId = getUserId(req);
-
-        const history = [];
-        const now = Date.now();
-
-        // Собираем все записи этого пользователя
-        for (const [key, value] of userCache.entries()) {
-            if (key.startsWith(`${userId}_`)) {
-                const cacheAge = now - new Date(value.timestamp).getTime();
-                const daysAgo = Math.floor(cacheAge / (24 * 60 * 60 * 1000));
-
-                if (daysAgo <= 21) { // Только за последние 3 недели
-                    history.push({
-                        date: value.timestamp,
-                        daysAgo: daysAgo,
-                        weight: value.userData.weight,
-                        specialist: key.split('_').pop(),
-                        cached: cacheAge < CACHE_TTL
-                    });
-                }
-            }
-        }
-
-        // Сортируем по дате (новые сначала)
-        history.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        // Находим первый и последний вес
-        let firstWeight = null;
-        let lastWeight = null;
-        let totalChange = 0;
-        let periodDays = 0;
-
-        if (history.length > 0) {
-            firstWeight = history[history.length - 1].weight;
-            lastWeight = history[0].weight;
-            totalChange = lastWeight - firstWeight;
-
-            const firstDate = new Date(history[history.length - 1].date);
-            const lastDate = new Date(history[0].date);
-            periodDays = Math.floor((lastDate - firstDate) / (24 * 60 * 60 * 1000));
-        }
-
-        res.json({
-            success: true,
-            userId: userId,
-            history: history,
-            summary: {
-                totalRecords: history.length,
-                firstWeight,
-                lastWeight,
-                totalChange: totalChange.toFixed(1),
-                periodDays: periodDays
-            }
-        });
-
-    } catch (error) {
-        console.error('Ошибка получения истории веса:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось получить историю веса'
-        });
-    }
-});
-
-// Статистика кэша
-app.get('/api/cache-stats', (req, res) => {
-    const now = Date.now();
-    const stats = {
-        total: userCache.size,
-        byAge: { '0-7 дней': 0, '1-2 недели': 0, '2-3 недели': 0, '>3 недель': 0 },
-        bySpecialist: { trainer: 0, diet: 0, energy: 0 },
-        byGender: { male: 0, female: 0 },
-        cacheRules: {
-            maxWeeks: 3,
-            weightThreshold: WEIGHT_THRESHOLD,
-            checkAllFields: true
-        }
-    };
-
-    for (const [key, value] of userCache.entries()) {
-        const age = now - new Date(value.timestamp).getTime();
-        const days = age / (24 * 60 * 60 * 1000);
-
-        // Возрастные группы
-        if (days <= 7) stats.byAge['0-7 дней']++;
-        else if (days <= 14) stats.byAge['1-2 недели']++;
-        else if (days <= 21) stats.byAge['2-3 недели']++;
-        else stats.byAge['>3 недель']++;
-
-        // Специалисты
-        const specialist = key.split('_').pop();
-        if (stats.bySpecialist[specialist] !== undefined) {
-            stats.bySpecialist[specialist]++;
-        }
-
-        // Пол
-        const gender = value.userData?.gender || 'unknown';
-        if (gender === 'male' || gender === 'female') {
-            stats.byGender[gender]++;
-        }
-    }
-
-    res.json(stats);
-});
-
-// Очистка кэша
-app.post('/api/clean-cache', (req, res) => {
-    const now = Date.now();
-    let removed = 0;
-
-    for (const [key, value] of userCache.entries()) {
-        const cacheAge = now - new Date(value.timestamp).getTime();
-        if (cacheAge >= CACHE_TTL) {
-            userCache.delete(key);
-            removed++;
-        }
-    }
-
-    saveCacheAsync();
-
-    res.json({
-        success: true,
-        message: `Очищено ${removed} записей старше 3 недель`,
-        removed: removed,
-        remaining: userCache.size
-    });
-});
-
-// Запуск сервера
-app.listen(PORT, () => {
-    console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-    console.log(`🤖 AI интеграция: Fireworks активна`);
-    console.log(`📂 Файловый кэш: порог ±${WEIGHT_THRESHOLD} кг, срок ${CACHE_TTL / (7 * 24 * 60 * 60 * 1000)} недель`);
-});
-
-
-module.exports = app;
-
-
-
+• Все рекомендации должны
