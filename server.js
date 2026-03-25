@@ -336,25 +336,25 @@ app.post('/api/query', async (req, res) => {
     try {
         const { model, messages, max_tokens, temperature } = req.body;
 
-        const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY;
-        if (!FIREWORKS_API_KEY) {
+        const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+        if (!OPENROUTER_API_KEY) {
             return res.status(500).json({
                 success: false,
-                error: 'API ключ не настроен на сервере'
+                error: 'API ключ OpenRouter не настроен на сервере'
             });
         }
 
         const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+            'https://openrouter.ai/api/v1/chat/completions',
             {
-                model: model || 'accounts/fireworks/models/deepseek-v3-0324',
+                model: model || 'deepseek/deepseek-r1',
                 messages,
                 max_tokens: max_tokens || 1000,
                 temperature: temperature || 0.7
             },
             {
                 headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
+                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -397,9 +397,9 @@ app.post('/api/analyze-workout', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+            'https://openrouter.ai/api/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/deepseek-v3-0324',
+                model: 'deepseek/deepseek-r1',
                 messages: [
                     {
                         role: 'system',
@@ -415,7 +415,7 @@ app.post('/api/analyze-workout', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
+                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -458,9 +458,9 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+            'https://openrouter.ai/api/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
+                model: 'deepseek/deepseek-r1',
                 messages: [
                     {
                         role: 'system',
@@ -476,7 +476,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
+                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -495,7 +495,6 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         });
     }
 });
-
 // Калибровка энерготипа
 app.post('/api/calibrate-energy', async (req, res) => {
     try {
@@ -525,9 +524,9 @@ app.post('/api/calibrate-energy', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+            'https://openrouter.ai/api/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/deepseek-v3-0324',
+                model: 'deepseek/deepseek-r1',
                 messages: [
                     {
                         role: 'system',
@@ -543,13 +542,52 @@ app.post('/api/calibrate-energy', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
+                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
         );
 
         const content = response.data.choices[0].message.content;
+
+        // Парсим JSON из ответа
+        try {
+            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) ||
+                content.match(/{[\s\S]*}/);
+
+            if (jsonMatch) {
+                const jsonStr = jsonMatch[1] || jsonMatch[0];
+                const result = JSON.parse(jsonStr);
+
+                res.json({
+                    success: true,
+                    calibration: result
+                });
+            } else {
+                res.json({
+                    success: true,
+                    calibration: {
+                        analysis: content
+                    }
+                });
+            }
+        } catch (parseError) {
+            res.json({
+                success: true,
+                calibration: {
+                    analysis: content
+                }
+            });
+        }
+
+    } catch (error) {
+        console.error('Ошибка калибровки:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Не удалось выполнить калибровку'
+        });
+    }
+});
 
         // Парсим JSON из ответа
         try {
@@ -615,9 +653,9 @@ app.post('/api/daily-tips', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+            'https://openrouter.ai/api/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/deepseek-v3-0324',
+                model: 'deepseek/deepseek-r1',
                 messages: [
                     {
                         role: 'system',
@@ -633,7 +671,7 @@ app.post('/api/daily-tips', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
+                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -652,7 +690,6 @@ app.post('/api/daily-tips', async (req, res) => {
         });
     }
 });
-
 // ====================
 // Существующие эндпоинты
 // ====================
@@ -979,30 +1016,30 @@ async function getAIResponse(prompt, specialist) {
 • Дай сразу практические рекомендации`
         };
 
-        const response = await axios.post(
-            'https://api.fireworks.ai/inference/v1/chat/completions',
+const response = await axios.post(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+        model: 'deepseek/deepseek-r1',
+        messages: [
             {
-                model: 'accounts/fireworks/models/deepseek-v3-0324',
-                messages: [
-                    {
-                        role: 'system',
-                        content: systemPrompts[specialist] || 'Ты профессиональный эксперт.'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                max_tokens: 1500,
-                temperature: 0.7
+                role: 'system',
+                content: systemPrompts[specialist] || 'Ты профессиональный эксперт.'
             },
             {
-                headers: {
-                    'Authorization': 'Bearer fw_8xD76SxbTANnjU33ENAxbK',
-                    'Content-Type': 'application/json'
-                }
+                role: 'user',
+                content: prompt
             }
-        );
+        ],
+        max_tokens: 1500,
+        temperature: 0.7
+    },
+    {
+        headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    }
+);
 
         return response.data.choices[0].message.content;
     } catch (error) {
