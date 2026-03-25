@@ -743,4 +743,12 @@ app.listen(PORT, () => {
     console.log(`🤖 AI интеграция: Fireworks активна`);
 });
 
+app.get('/api/test-endpoint', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        message: 'Endpoint works!',
+        timestamp: new Date().toISOString()
+    });
+});
+
 module.exports = app;
