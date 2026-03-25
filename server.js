@@ -589,44 +589,7 @@ app.post('/api/calibrate-energy', async (req, res) => {
     }
 });
 
-        // Парсим JSON из ответа
-        try {
-            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) ||
-                content.match(/{[\s\S]*}/);
-
-            if (jsonMatch) {
-                const jsonStr = jsonMatch[1] || jsonMatch[0];
-                const result = JSON.parse(jsonStr);
-
-                res.json({
-                    success: true,
-                    calibration: result
-                });
-            } else {
-                res.json({
-                    success: true,
-                    calibration: {
-                        analysis: content
-                    }
-                });
-            }
-        } catch (parseError) {
-            res.json({
-                success: true,
-                calibration: {
-                    analysis: content
-                }
-            });
-        }
-
-    } catch (error) {
-        console.error('Ошибка калибровки:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось выполнить калибровку'
-        });
-    }
-});
+        
 
 // Генерация персонализированных советов
 app.post('/api/daily-tips', async (req, res) => {
