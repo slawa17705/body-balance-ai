@@ -112,7 +112,7 @@ app.post('/api/analyze-workout', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/qwen3-14b-instruct',
+               model: 'accounts/fireworks/models/deepseek-v3',
                 messages: [
                     {
                         role: 'system',
@@ -173,7 +173,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/qwen3-14b-instruct',
+               model: 'accounts/fireworks/models/deepseek-v3',
                 messages: [
                     {
                         role: 'system',
@@ -240,7 +240,7 @@ app.post('/api/calibrate-energy', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/qwen3-14b-instruct',
+               model: 'accounts/fireworks/models/deepseek-v3',
                 messages: [
                     {
                         role: 'system',
@@ -329,7 +329,7 @@ app.post('/api/daily-tips', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/qwen3-14b-instruct',
+               model: 'accounts/fireworks/models/deepseek-v3',
                 messages: [
                     {
                         role: 'system',
@@ -609,7 +609,7 @@ async function getAIResponse(prompt, specialist) {
         const response = await axios.post(
             'https://api.fireworks.ai/inference/v1/chat/completions',
             {
-                model: 'accounts/fireworks/models/qwen3-14b-instruct',
+               model: 'accounts/fireworks/models/deepseek-v3',
                 messages: [
                     {
                         role: 'system',
