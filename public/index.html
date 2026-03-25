@@ -1135,11 +1135,7 @@ ${content}
                 showAIResultModal(title, content, 'пользователя');
             };
 
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(() => console.log('✅ Service Worker зарегистрирован'))
-                    .catch(err => console.log('❌ Ошибка Service Worker:', err));
-            }
+    
         </script>
 </body>
 
