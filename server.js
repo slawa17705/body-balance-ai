@@ -60,7 +60,7 @@ app.post('/api/query', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-                model: model || 'accounts/fireworks/models/llama-v3p1-8b-instruct',
+                model: model || 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages,
                 max_tokens: max_tokens || 1000,
                 temperature: temperature || 0.7
@@ -112,7 +112,7 @@ app.post('/api/analyze-workout', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
+              model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
                     {
                         role: 'system',
@@ -173,7 +173,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
+              model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
                     {
                         role: 'system',
@@ -240,7 +240,7 @@ app.post('/api/calibrate-energy', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
+              model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
                     {
                         role: 'system',
@@ -329,7 +329,7 @@ app.post('/api/daily-tips', async (req, res) => {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
+              model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
                     {
                         role: 'system',
@@ -609,7 +609,7 @@ async function getAIResponse(prompt, specialist) {
         const response = await axios.post(
             'https://api.fireworks.ai/v1/chat/completions',
             {
-               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
+              model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
                     {
                         role: 'system',
