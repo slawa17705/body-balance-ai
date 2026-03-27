@@ -58,7 +58,7 @@ app.post('/api/query', async (req, res) => {
         }
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
                 model: model || 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages,
@@ -110,7 +110,7 @@ app.post('/api/analyze-workout', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
@@ -171,7 +171,7 @@ app.post('/api/analyze-nutrition', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
@@ -238,7 +238,7 @@ app.post('/api/calibrate-energy', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
@@ -327,7 +327,7 @@ app.post('/api/daily-tips', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
@@ -607,7 +607,7 @@ async function getAIResponse(prompt, specialist) {
         };
 
         const response = await axios.post(
-            'https://api.fireworks.ai/v1/chat/completions',
+           'https://api.fireworks.ai/v1/chat/completions',
             {
               model: 'accounts/fireworks/models/nvidia-nemotron-3-super-120b-a12b-fp8',
                 messages: [
