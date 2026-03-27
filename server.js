@@ -5,7 +5,6 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -33,7 +32,8 @@ function getUserId(req) {
         weight: userData.weight,
         height: userData.height,
         goal: userData.goal,
-        activity: userData.activity
+        activity: userData.activity,
+        additionalInfo: userData.additionalInfo
     });
     const hash = require('crypto').createHash('md5').update(userString).digest('hex').slice(0, 12);
     return `user_${hash}`;
@@ -77,7 +77,7 @@ function calculateBMIAndObesity(weight, height) {
     return { bmi: bmi.toFixed(1), category, obesityDegree };
 }
 
-// ==================== ФУНКЦИЯ КОНСЕНСУСА ЭКСПЕРТОВ С ПЕРСОНАЛИЗАЦИЕЙ ====================
+// ==================== ФУНКЦИЯ КОНСЕНСУСА ЭКСПЕРТОВ ====================
 
 function getExpertConsensus(specialist, userData, bmiData) {
     const genderText = userData.gender === 'male' ? 'мужчина' : 'женщина';
@@ -87,6 +87,7 @@ function getExpertConsensus(specialist, userData, bmiData) {
     const height = userData.height;
     const goal = userData.goal;
     const activity = userData.activity;
+    const additionalInfo = userData.additionalInfo || 'не указано';
     
     // Персонализированные расчёты
     const recommendedCalories = Math.round(weight * 30);
@@ -101,6 +102,18 @@ function getExpertConsensus(specialist, userData, bmiData) {
     
     const goalText = goal === 'похудеть' ? 'снижение веса' : (goal === 'набрать массу' ? 'набор мышечной массы' : 'общее оздоровление');
     const activityText = activity === 'низкая' ? 'начинающий' : (activity === 'высокая' ? 'продвинутый' : 'средний уровень');
+    
+    // Блок с учётом дополнительной информации
+    const healthWarning = additionalInfo !== 'не указано' ? `
+⚠️ **ВАЖНО! УЧИТЫВАЯ ВАШИ ОСОБЕННОСТИ:**
+${additionalInfo}
+
+**Специальные рекомендации:**
+• Обязательно проконсультируйтесь с лечащим врачом перед началом тренировок
+• Выбирайте упражнения, исключающие нагрузку на проблемные зоны
+• Начинайте с минимальной интенсивности, внимательно следя за самочувствием
+• При любых болевых ощущениях — прекращайте выполнение
+` : '';
 
     if (specialist === 'trainer') {
         return `
@@ -116,6 +129,9 @@ function getExpertConsensus(specialist, userData, bmiData) {
 • **Рекомендуемая калорийность:** ${recommendedCalories} ккал/день
 • **Целевой вес:** ${targetWeight.toFixed(0)} кг
 • **Уровень активности:** ${activityText}
+${additionalInfo !== 'не указано' ? `• **Особенности здоровья:** ${additionalInfo}` : ''}
+
+${healthWarning}
 
 ---
 
@@ -189,6 +205,9 @@ ${weeklyWorkouts >= 5 ? '• **Суббота:** активный отдых (п
 • **Ваш ИМТ:** ${bmiData.bmi} (${bmiData.category})
 • **Суточная норма воды:** ${waterAmount} мл
 • **Рекомендуемая калорийность:** ${recommendedCalories} ккал/день
+${additionalInfo !== 'не указано' ? `• **Особенности здоровья:** ${additionalInfo}` : ''}
+
+${healthWarning}
 
 ---
 
@@ -269,6 +288,9 @@ ${weeklyWorkouts >= 5 ? '• **Суббота:** активный отдых (п
 • **Цель:** ${goalText}
 • **Ваш ИМТ:** ${bmiData.bmi} (${bmiData.category})
 • **Уровень активности:** ${activityText}
+${additionalInfo !== 'не указано' ? `• **Особенности здоровья:** ${additionalInfo}` : ''}
+
+${healthWarning}
 
 ---
 
