@@ -1,19 +1,15 @@
 {
   "name": "body-balance-ai",
   "version": "1.0.0",
-  "description": "AI фитнес-консультант с методиками экспертов",
+  "description": "AI фитнес-консультант",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "@supabase/supabase-js": "^2.39.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+    "axios": "^1.6.0"
   }
 }
