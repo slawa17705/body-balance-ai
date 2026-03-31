@@ -1,4 +1,5 @@
-   "name": "ai-specialists",
+{
+    "name": "ai-specialists",
     "version": "1.0.0",
     "main": "server.js",
     "scripts": {
